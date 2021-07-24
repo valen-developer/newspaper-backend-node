@@ -5,6 +5,6 @@ export class UserCreator {
   constructor(private userRepository: UserRepository) {}
 
   public async create(user: User): Promise<void> {
-    this.userRepository.save(user);
+    await this.userRepository.save(user);
   }
 }

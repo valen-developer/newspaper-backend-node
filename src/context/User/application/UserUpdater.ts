@@ -6,16 +6,6 @@ export class UserUpdater {
   constructor(private userRepository: UserRepository) {}
 
   public async update(user: User): Promise<User> {
-    const userObject = await this.userRepository.update(user);
-
-    if (!userObject)
-      throw new HTTPException('user updater', 'user not found', 404);
-
-    return new User(
-      userObject.name,
-      userObject.email,
-      userObject.password,
-      userObject.role
-    );
+    return await this.userRepository.update(user);
   }
 }
