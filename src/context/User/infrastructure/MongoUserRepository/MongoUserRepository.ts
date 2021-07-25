@@ -13,12 +13,13 @@ export class MongoUserRepository implements UserRepository {
       await userMongo.save();
     } catch (error: any) {
       const keyPattern = error.keyPattern;
-      if (!keyPattern)
+      if (!keyPattern) {
         throw new HTTPException(
           'mongo user repository:save ',
           'server error',
           500
         );
+      }
 
       const keys = Object.keys(keyPattern);
       throw new HTTPException(
@@ -40,12 +41,13 @@ export class MongoUserRepository implements UserRepository {
 
   public async update(user: User): Promise<User> {
     try {
-      await UserMongoModel.findByIdAndUpdate(
+      await UserMongoModel.findOneAndUpdate(
         { uuid: user.uuid.value },
         user.toObject()
       );
       return user;
     } catch (error) {
+      console.log(error);
       throw new HTTPException(
         'mongo user repository: update',
         'user can´t be updated',
@@ -57,6 +59,26 @@ export class MongoUserRepository implements UserRepository {
   public async get(uuid: string): Promise<User> {
     try {
       const userMongo: UserObject = await UserMongoModel.findOne({ uuid });
+
+      return new User(
+        userMongo.uuid,
+        userMongo.name,
+        userMongo.email,
+        userMongo.password,
+        userMongo.role
+      );
+    } catch (error) {
+      throw new HTTPException(
+        'mongo user repository: get',
+        'user not found',
+        404
+      );
+    }
+  }
+
+  public async getByEmail(email: string): Promise<User> {
+    try {
+      const userMongo: UserObject = await UserMongoModel.findOne({ email });
 
       return new User(
         userMongo.uuid,

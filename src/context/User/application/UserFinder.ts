@@ -8,4 +8,12 @@ export class UserFinder {
   public async getUser(uuid: string): Promise<User> {
     return await this.userRepository.get(uuid);
   }
+
+  public async getByEmail(email: string): Promise<User> {
+    return await this.userRepository.getByEmail(email);
+  }
+
+  public async getAll(): Promise<User[]> {
+    return await this.getAll();
+  }
 }
